@@ -1,4 +1,36 @@
+import { useState } from "react";
+
 export default function Example() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState(""); 
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!name || !email || !password) {
+      setError("All fields are required");
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:5000/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const data = await response.json();
+      if (data.error) {
+        setError(data.error);
+        return;
+      }
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <>
       <div className="w-full h-screen bg-[#101828]">
@@ -37,9 +69,9 @@ export default function Example() {
               Sign up to Todo List
             </h2>
           </div>
-
+          {error && <p className="text-red-500">{error}</p>}
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form action="#" method="POST" className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
                   htmlFor="name"
@@ -52,6 +84,8 @@ export default function Example() {
                     id="name"
                     name="name"
                     type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     required
                     autoComplete="name"
                     className="block w-full rounded-md bg-[#1c2433] px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-[#3b4760] placeholder:text-white focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -70,6 +104,8 @@ export default function Example() {
                     id="email"
                     name="email"
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                     autoComplete="email"
                     className="block w-full rounded-md bg-[#1c2433] px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-[#3b4760] placeholder:text-white focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -90,6 +126,8 @@ export default function Example() {
                   <input
                     id="password"
                     name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     type="password"
                     required
                     autoComplete="current-password"
