@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Example() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState(""); 
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,6 +16,7 @@ export default function Example() {
       return;
     }
     try {
+      setLoading(true);
       const response = await fetch("http://localhost:5000/user", {
         method: "POST",
         headers: {
@@ -24,12 +28,16 @@ export default function Example() {
       if (data.error) {
         setError(data.error);
         return;
+      }else {
+        navigate("/login");
       }
       console.log(data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <>
@@ -141,19 +149,19 @@ export default function Example() {
                   type="submit"
                   className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  Sign in
+                  Sign up
                 </button>
               </div>
             </form>
 
             <p className="mt-10 text-center text-sm/6 text-[#99a1af]">
               Already have an Account?{" "}
-              <a
-                href=""
+              <Link
+                to="/login"
                 className="font-semibold text-indigo-600 hover:text-indigo-500"
               >
                 Login
-              </a>
+              </Link>
             </p>
           </div>
         </div>
