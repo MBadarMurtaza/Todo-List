@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import jwt from "jsonwebtoken";
 
 const userController = {
   singup: async (req, res) => {
@@ -42,7 +43,11 @@ const userController = {
       if (user.password !== req.body.password) {
         return res.status(401).json({ message: "invalid password" });
       }
-      res.status(200).json({ message: "login seccessfully" });
+      const token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET);
+      res.status(200).json({
+        message: "user login seccessfully",
+        token,
+      });
     } catch (error) {
       console.log("Error :", error);
       res.status(400).json({ message: error.message });
