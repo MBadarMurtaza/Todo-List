@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./config/database.js";
 import userRouter from "./routes/user.routes.js";
+import taskRouter from "./routes/task.routes.js";
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -16,7 +17,8 @@ app.use((req, res, next)=>{
   next();
 })
 
-app.use("/user", userRouter);
+app.use("/user",userRouter);
+app.use('/tasks',taskRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
