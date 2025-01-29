@@ -27,7 +27,8 @@ export default function Example() {
       if (data.error) {
         setError(data.error);
         return;
-      } else {
+      } else if (data.token) {
+        console.log(data.token);
         localStorage.setItem("token", data.token);
         navigate("/");
       }
